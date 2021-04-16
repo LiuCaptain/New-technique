@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>6-1 Setup 函数的使用</title>
+  <script src="https://unpkg.com/vue@next"></script>
+</head>
+<body>
+  <div id="root"></div>
+</body>
+<script>
+  const app = Vue.createApp({
+    template: `<div>{{ name }}</div>`,
+    beforeCreate () {
+      console.log('beforeCreate')
+    },
+    created () {
+      console.log('created')
+    },
+    mounted () {
+      this.getSetUp()
+    },
+    // setup 一个组件选项，在创建组件之前（beforeCreate）执行
+    setup (props, context) {
+      console.log('setup')
+      return {
+        name: '刘英俊'
+      }
+    },
+    methods: {
+      getSetUp () { // setup 不能调用实例上的方法，实例上的方法可以调用 setup
+        const setup = this.$options.setup
+        console.log(setup())
+      }
+    }
+  })
+  const vm = app.mount('#root')
+</script>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>6-3 ref，reactive 响应式引用的用法和原理 （2）</title>
+  <script src="https://unpkg.com/vue@next"></script>
+</head>
+<body>
+  <div id="root"></div>
+</body>
+<script>
+  const app = Vue.createApp({
+    template: `
+      <div>{{ obj1.name }}</div>
+      <div>{{ age }}</div>
+    `,
+    setup (props, context) {
+      const { reactive, readonly, toRefs } = Vue
+      
+      // 报警告：Set operation on key "name" failed: target is readonly. Proxy {name: "dell"}
+      const obj1 = readonly(reactive({ name: 'dell' }))
+      setTimeout(() => {
+        obj1.name = 'lee'
+      }, 2000)
+
+      // toRefs 原理：proxy({ age: 27 }) 调用 toRefs 之后，会转变成 { age: proxy({ value: 27 }) }
+      const obj2 = reactive({ age: 27 })
+      setTimeout(() => {
+        obj2.age = 28
+      }, 2000)
+      const { age } = toRefs(obj2)
+
+      return {
+        obj1,
+        age
+      }
+    }
+  })
+  const vm = app.mount('#root')
+</script>
+</html>
