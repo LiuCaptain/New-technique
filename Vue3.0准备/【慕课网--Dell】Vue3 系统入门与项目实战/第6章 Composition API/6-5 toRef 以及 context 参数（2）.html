@@ -8,6 +8,67 @@
   <script src="https://unpkg.com/vue@next"></script>
 </head>
 <body>
-  
+  <div id="root"></div>
 </body>
+<script>
+  const app = Vue.createApp({
+    template: `
+      <childAttrs app='app'></childAttrs>
+      <childSlots>parent</childSlots>
+      <childEmit @change="handleChange"></childEmit>
+    `,
+    methods: {
+      handleChange (val) {
+        alert(val)
+      }
+    }
+  })
+
+  app.component('childAttrs', {
+    template: `
+      <div>childAttrs</div>
+    `,
+    setup (props, context) {
+      // attrs：指 None-Props 属性，指在父组件传入但没有被子组件 props 选项接收的属性
+      const { attrs } = context
+      console.log('attrs', attrs)
+
+      return {}
+    }
+  })
+
+  app.component('childSlots', {
+    mounted () {
+      console.log('传统方法获取slots', this.$slots.default()) // 传统方法获取 slots
+    },
+    setup (props, context) {
+      // slots: 指父组件传递过来的插槽
+      const { slots } = context
+      const { h } = Vue
+
+      return () => h('div', {}, slots.default()) // 当 setup 返回的是一个虚拟 Dom 节点的时候，那么组件将会用虚拟 Dom 作为模板进行渲染
+    }
+  })
+
+  app.component('childEmit', {
+    template: `
+      <div @click="handleClick">childEmit</div>
+    `,
+    mounted () {
+      // this.$emit('change', '点击子组件') // 传统方法子组件向外触发一个事件
+    },
+    setup (props, context) {
+      const { emit } = context
+      const handleClick = () => {
+        emit('change', '点击子组件')
+      }
+
+      return {
+        handleClick
+      }
+    }
+  })
+
+  const vm = app.mount('#root')
+</script>
 </html>
