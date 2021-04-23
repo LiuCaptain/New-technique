@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>6-6、6-7 使用 Composition API 开发TodoList</title>
+  <script src="https://unpkg.com/vue@next"></script>
+</head>
+<body>
+  <div id="root"></div>
+</body>
+<script>
+  // list 相关实现
+  const listRelativeEffect = () => {
+    const { reactive } = Vue
+    const list = reactive([])
+    const addItemToList = (item) => {
+      console.log('item', item)
+      list.push(item)
+    }
+
+    return { list, addItemToList }
+  }
+
+  // input 相关实现
+  const inputRelativeEffect = () => {
+    const { ref } = Vue
+    const inputValue = ref('')
+    const handleInput = (e) => {
+      inputValue.value = e.target.value
+    }
+
+    return { inputValue, handleInput }
+  }
+
+  const app = Vue.createApp({
+    template: `
+      <div>
+        <div>
+          <input :value="inputValue" @input="handleInput" />
+          <button @click="addItemToList(inputValue)">提交</button>
+        </div>
+        <ul>
+          <li v-for="(item, index) of list" :key="index">{{ item }}</li>
+        </ul>
+      </div>
+    `,
+    setup () {
+      const { list, addItemToList } = listRelativeEffect()
+      const { inputValue, handleInput } = inputRelativeEffect()
+
+      return {
+        list,
+        addItemToList,
+        inputValue,
+        handleInput
+      }
+    }
+  })
+
+  const vm = app.mount('#root')
+</script>
+</html>
