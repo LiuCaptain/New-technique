@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>6-9 watch 和 watchEffect 的使用和差异性（1）</title>
+  <script src="https://unpkg.com/vue@next"></script>
+</head>
+<body>
+  <div id="root"></div>
+</body>
+<script>
+  const app = Vue.createApp({
+    template: `
+    <div>
+      <div>
+        Name:<input v-model="name" />
+      </div>
+      <div>
+        Age:<input v-model="age" />
+      </div>
+      <div>
+        Sex:<input v-model="sex" />
+      </div>
+      <div>
+        Height:<input v-model="height" />
+      </div>
+    </div>
+    `,
+    setup () {
+      /**
+       * watch 监听器特点：
+       * ①、它是惰性的，页面加载完成它都不会执行
+       * ②、可以获取被侦听数据的原始值和当前值
+       * */ 
+      const { ref, toRefs, reactive, watch } = Vue
+
+      // 监听基本数据类型
+      const name = ref('dell')
+      const stop = watch(name, (newVal, oldVal) => {
+        console.log('监听基本数据类型：', newVal, oldVal)
+        setTimeout(() => {
+          stop()
+        }, 2000)
+      })
+
+      // 监听复杂数据类型
+      const obj = reactive({
+        age: '27',
+        sex: 'man',
+        height: '172'
+      })
+      const { age, sex, height } = toRefs(obj)
+      // ①、监听单个
+      watch(() => obj.age, (newVal, oldVal) => {
+        console.log('监听单个复杂数据类型：', newVal, oldVal)
+      })
+      // ②、监听多个
+      watch([() => obj.sex, () => obj.height], ([newValSex, newValHeight], [oldValSex, oldValHeight]) => {
+        console.log('监听多个复杂数据类型中的sex：', newValSex, oldValSex)
+        console.log('监听多个复杂数据类型中的height：', newValHeight, oldValHeight)
+      })
+
+      return {
+        name,
+        age,
+        sex,
+        height
+      }
+    }
+  })
+
+  const vm = app.mount('#root')
+</script>
+</html>

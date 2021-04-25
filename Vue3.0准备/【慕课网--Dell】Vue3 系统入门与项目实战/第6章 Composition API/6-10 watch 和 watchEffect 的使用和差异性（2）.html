@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>6-10 watch 和 watchEffect 的使用和差异性（2）</title>
+  <script src="https://unpkg.com/vue@next"></script>
+</head>
+<body>
+  <div id="root"></div>
+</body>
+<script>
+  const app = Vue.createApp({
+    template: `
+    <div>
+      <input v-model="name" />
+    </div>
+    `,
+    setup () {
+      /**
+       * watchEffect 监听器特点：
+       * ①、立即执行（immediate），没有惰性
+       * ②、不能获取被侦听数据的原始值
+       * ③、只传递一个回调函数，并且回调函数不需要传递要侦听的参数，自动感知代码依赖
+       * */ 
+      const { reactive, toRefs, watchEffect } = Vue
+      const obj = reactive({ name: 'dell' })
+      const { name } = toRefs(obj)
+      const stop = watchEffect(() => {
+        console.log('obj.name', obj.name)
+        console.log('name', name.value)
+        setTimeout(() => {
+          stop()
+        }, 5000)
+      })
+
+      return {
+        name
+      }
+    }
+  })
+
+  const vm = app.mount('#root')
+</script>
+</html>

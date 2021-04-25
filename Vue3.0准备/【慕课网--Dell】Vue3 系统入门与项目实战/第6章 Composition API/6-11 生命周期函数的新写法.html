@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>6-11 生命周期函数的新写法</title>
+  <script src="https://unpkg.com/vue@next"></script>
+</head>
+<body>
+  <div id="root"></div>
+</body>
+<script>
+  const app = Vue.createApp({
+    template: `
+      <div @click="handleClickName">{{ name }}</div>
+    `,
+    // <child v-if="hiddenChild" @click="handleHiddenChild"></child>
+    setup () {
+      const { ref, onBeforeMount, onMounted, onBeforeUpdate, onUpdated, onErrorCaptured, onRenderTracked, onRenderTriggered } = Vue
+      const name = ref('dell')
+      const hiddenChild = ref(true)
+
+      onBeforeMount(() => {
+        console.log('onBeforeMount')
+      })
+      onMounted(() => {
+        console.log('onMounted')
+      })
+      onBeforeUpdate(() => {
+        console.log('onBeforeUpdate')
+      })
+      onUpdated(() => {
+        console.log('onUpdated')
+      })
+      // （错误捕获）
+      onErrorCaptured(() => {
+        console.log('onErrorCaptured')
+      })
+      // （渲染追踪）每次渲染后重新收集响应式依赖
+      onRenderTracked(() => {
+        console.log('onRenderTracked')
+      })
+      // （渲染触发）每次触发重新渲染时自动执行
+      onRenderTriggered(() => {
+        console.log('onRenderTriggered')
+      })
+
+      const handleClickName = () => {
+        name.value = 'lee'
+      }
+      const handleHiddenChild = () => {
+        console.log('隐藏子组件')
+        hiddenChild.value = false
+      }
+
+      return {
+        name,
+        handleClickName,
+        hiddenChild,
+        handleHiddenChild
+      }
+    }
+  })
+
+  app.component('child', {
+    template: `
+      <div>子组件</div>
+    `,
+    setup () {
+      const { onBeforeUnmount, onUnmounted } = Vue
+      onBeforeUnmount(() => {
+        console.log('onBeforeUnmount')
+      })
+      onUnmounted(() => {
+        console.log('onUnmounted')
+      })
+
+      return {}
+    }
+  })
+
+  const vm = app.mount('#root')
+</script>
+</html>

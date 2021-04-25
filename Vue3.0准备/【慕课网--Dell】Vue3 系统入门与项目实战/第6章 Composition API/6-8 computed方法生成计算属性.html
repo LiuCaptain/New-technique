@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>6-8 computed方法生成计算属性</title>
+  <script src="https://unpkg.com/vue@next"></script>
+</head>
+<body>
+  <div id="root"></div>
+</body>
+<script>
+  const app = Vue.createApp({
+    template: `
+      <div @click="handleAddFive">{{ count }}--{{ countAddFive }}</div>
+      <div>{{ obj.num }}--{{ numAddTen }}</div>
+    `,
+    setup () {
+      const { ref, reactive, computed } = Vue
+      // 第一种用法
+      const count = ref(0)
+      const handleAddFive = () => {
+        count.value += 1
+      }
+      const countAddFive = computed(() => {
+        return count.value + 5
+      })
+
+      // 第二种用法
+      const obj = reactive({ num: 0 })
+      const numAddTen = computed({
+        get: () => {
+          return obj.num + 10
+        },
+        set: (val) => {
+          obj.num = val
+        }
+      })
+      setTimeout(() => {
+        numAddTen.value = 100
+      }, 2000)
+
+
+
+      return {
+        count,
+        handleAddFive,
+        countAddFive,
+        obj,
+        numAddTen
+      }
+    }
+  })
+
+  const vm = app.mount('#root')
+</script>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>6-12 Provide,Inject,模版 Ref 的用法</title>
+  <script src="https://unpkg.com/vue@next"></script>
+</head>
+<body>
+  <div id="root"></div>
+</body>
+<script>
+  const app = Vue.createApp({
+    template: `
+      <div>
+        <child></child>
+        <div ref="dom">目标dom</div>
+      </div>
+    `,
+    setup () {
+      const { ref,readonly, provide, onMounted } = Vue
+      const name = ref('dell')
+      provide('name', readonly(name))
+      provide('changeName', (val) => {
+        name.value = val
+      })
+
+      // Composition API 获取 Dom 的方法
+      const dom = ref(null)
+      onMounted(() => {
+        console.log(dom.value)
+      })
+
+      return {
+        dom
+      }
+    }
+  })
+
+  app.component('child', {
+    template: `
+      <div @click="handleClick">{{ name }}</div>
+    `,
+    setup () {
+      const { inject } = Vue
+      const name = inject('name', 'simon') // 第二个参数为默认值
+      const changeName = inject('changeName')
+      const handleClick = () => {
+        changeName('lee')
+      }
+
+      return {
+        name,
+        handleClick
+      }
+    }
+  })
+
+  const vm = app.mount('#root')
+</script>
+</html>
