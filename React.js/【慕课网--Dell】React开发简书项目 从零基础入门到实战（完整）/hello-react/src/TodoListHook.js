@@ -1,4 +1,5 @@
-import { Fragment, useState } from "react";
+import React, { Fragment, useState } from "react";
+import TodoItem from "./TodoItemHook";
 
 const TodoList = () => {
     const [inputValue, setInputValue] = useState("");
@@ -31,9 +32,11 @@ const TodoList = () => {
             <ul>
                 {list.map((item, index) => {
                     return (
-                        <li key={index} onClick={() => handleItem(index)}>
-                            {item}
-                        </li>
+                        <TodoItem
+                            key={index}
+                            content={item}
+                            handeItem={() => handleItem(index)}
+                        ></TodoItem>
                     );
                 })}
             </ul>
