@@ -9,27 +9,40 @@ class TodoListClass extends Component {
             inputValue: "",
             list: [],
         };
+        this.handleInput = this.handleInput.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     handleInput(event) {
-        this.setState({
+        this.setState(() => ({
             inputValue: event.target.value,
-        });
+        }));
     }
 
     handleSubmit() {
-        this.setState({
-            list: [...this.state.list, this.state.inputValue],
+        this.setState((prevState) => ({
+            list: [...prevState.list, ...prevState.inputValue],
             inputValue: "",
-        });
+        }));
     }
 
     handleItem(index) {
-        const list = [...this.state.list];
-        list.splice(index, 1);
+        this.setState((prevState) => {
+            const list = [...prevState.list];
+            list.splice(index, 1);
+            return { list: list };
+        });
+    }
 
-        this.setState({
-            list: list,
+    getTodoItem() {
+        return this.state.list.map((item, index) => {
+            return (
+                <TodoItem
+                    key={index}
+                    content={item}
+                    handleItem={this.handleItem.bind(this, index)}
+                ></TodoItem>
+            );
         });
     }
 
@@ -44,21 +57,11 @@ class TodoListClass extends Component {
                         id="todoInput"
                         className="input"
                         value={this.state.inputValue}
-                        onInput={this.handleInput.bind(this)}
+                        onInput={this.handleInput}
                     />
-                    <button onClick={this.handleSubmit.bind(this)}>添加</button>
+                    <button onClick={this.handleSubmit}>添加</button>
                 </div>
-                <ul>
-                    {this.state.list.map((item, index) => {
-                        return (
-                            <TodoItem
-                                key={index}
-                                content={item}
-                                handleItem={this.handleItem.bind(this, index)}
-                            ></TodoItem>
-                        );
-                    })}
-                </ul>
+                <ul>{this.getTodoItem()}</ul>
             </Fragment>
         );
     }

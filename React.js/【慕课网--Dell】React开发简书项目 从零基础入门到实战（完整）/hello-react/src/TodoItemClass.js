@@ -13,12 +13,8 @@ class TodoItem extends Component {
     }
 
     render() {
-        return (
-            <li
-                onClick={this.handleClickLi}
-                dangerouslySetInnerHTML={{ __html: this.props.content }}
-            ></li>
-        );
+        const { content } = this.props;
+        return <li onClick={this.handleClickLi} dangerouslySetInnerHTML={{ __html: content }}></li>;
     }
 }
 
