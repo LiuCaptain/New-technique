@@ -2,6 +2,10 @@ import React, { Component, Fragment } from "react";
 import TodoItem from "./TodoItemClass";
 import "./todoList.css";
 
+/**1、当组件的 state 或者 props 发生改变的时候，render 函数就会重新执行
+ * 2、当父组件的 render 函数被执行时，它的子组件的 render 函数都将被重新执行
+ */
+
 class TodoListClass extends Component {
     constructor(props) {
         super(props);
