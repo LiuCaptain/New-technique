@@ -21,7 +21,7 @@ class TodoListClass extends Component {
 
     handleSubmit() {
         this.setState((prevState) => ({
-            list: [...prevState.list, ...prevState.inputValue],
+            list: [...prevState.list, prevState.inputValue],
             inputValue: "",
         }));
     }

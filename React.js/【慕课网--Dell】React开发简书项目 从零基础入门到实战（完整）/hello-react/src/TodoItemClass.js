@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 
 class TodoItem extends Component {
     constructor(props) {
@@ -17,5 +18,12 @@ class TodoItem extends Component {
         return <li onClick={this.handleClickLi} dangerouslySetInnerHTML={{ __html: content }}></li>;
     }
 }
+
+TodoItem.propTypes = {
+    content: PropTypes.string,
+};
+TodoItem.defaultProps = {
+    content: "内容",
+};
 
 export default TodoItem;
