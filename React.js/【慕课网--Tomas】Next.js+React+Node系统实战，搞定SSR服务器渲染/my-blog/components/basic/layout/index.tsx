@@ -1,6 +1,6 @@
 import React from "react";
-import Header from "./../header";
-import Footer from "./../footer";
+import Header from "@/components/basic/header";
+import Footer from "@/components/basic/footer";
 import Head from "next/head";
 
 type Props = React.PropsWithChildren<{}>;
